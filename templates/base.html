@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}FoodEase{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="{{ url_for('home') }}">FoodEase</a>
+    <nav>
+      <a href="{{ url_for('menu') }}">Menu</a>
+      {% if g.user %}
+        <a href="{{ url_for('cart') }}">Bag{% if g.cart_count %} <span class="badge">{{ g.cart_count }}</span>{% endif %}</a>
+        <a href="{{ url_for('orders') }}">Orders</a>
+        <a href="{{ url_for('account') }}">Account</a>
+        {% if g.user['role'] == 'admin' %}
+          <a href="{{ url_for('admin') }}">Kitchen desk</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Sign out</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Sign in</a>
+        <a class="btn btn-small" href="{{ url_for('register') }}">Join</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for cat, msg in messages %}
+          <p class="flash {{ cat }}">{{ msg }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>FoodEase · neighbourhood kitchens, delivered · SQLite + syllabus SQL (102040305)</p>
+  </footer>
+</body>
+</html>

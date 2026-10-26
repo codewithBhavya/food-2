@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Sign in · FoodEase{% endblock %}
+{% block content %}
+<h1>Sign in</h1>
+<form class="form" method="post">
+  <label>Email <input type="email" name="email" required></label>
+  <label>Password <input type="password" name="password" required></label>
+  <button class="btn" type="submit">Continue</button>
+  <p class="hint">New here? <a href="{{ url_for('register') }}">Create an account</a>.</p>
+</form>
+{% endblock %}

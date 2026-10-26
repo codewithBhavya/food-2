@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.order_id }} · FoodEase{% endblock %}
+{% block content %}
+<p class="tag">{{ order.status }}</p>
+<h1>Order #{{ order.order_id }}</h1>
+<p class="muted">{{ order.restaurant_name }} · {{ order.order_date }} · {{ order.full_name }} · {{ order.phone }}</p>
+<p>Deliver to {{ order.line1 }}, {{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+
+<div class="split">
+  <div>
+    <h3>Dishes</h3>
+    <table>
+      <tbody>
+        {% for i in items %}
+          <tr>
+            <td>{{ i.quantity }} × {{ i.item_name }}</td>
+            <td>₹{{ i.line_total }}</td>
+          </tr>
+        {% endfor %}
+        <tr><td><strong>Total</strong></td><td><strong>₹{{ order.total_amount }}</strong></td></tr>
+      </tbody>
+    </table>
+    {% if payment %}
+      <p>Payment: {{ payment.method }} · {{ payment.status }} · ₹{{ payment.amount }}</p>
+    {% endif %}
+    {% if delivery %}
+      <p>Rider: {{ delivery.partner_name or 'unassigned' }} · {{ delivery.status }}</p>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h3>Kitchen trail</h3>
+    <p class="muted">Rows written by AFTER INSERT / AFTER UPDATE triggers on <code>orders</code>.</p>
+    <ul>
+      {% for a in audit %}
+        <li>{{ a.logged_at }} — {{ a.action }}</li>
+      {% else %}
+        <li>No audit rows.</li>
+      {% endfor %}
+    </ul>
+    {% if order.status not in ('delivered', 'cancelled', 'out_for_delivery') %}
+      <form method="post" action="{{ url_for('cancel_order', order_id=order.order_id) }}">
+        <button class="btn btn-ghost" type="submit">Cancel order</button>
+      </form>
+    {% endif %}
+    {% if g.user and g.user['role'] == 'admin' %}
+      <form method="post" action="{{ url_for('admin_status', order_id=order.order_id) }}" class="filters">
+        <select name="status">
+          <option value="preparing">preparing</option>
+          <option value="out_for_delivery">out_for_delivery</option>
+          <option value="delivered">delivered</option>
+          <option value="cancelled">cancelled</option>
+        </select>
+        <button class="btn btn-leaf" type="submit">Update status</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

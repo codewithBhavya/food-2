@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Checkout · FoodEase{% endblock %}
+{% block content %}
+<h1>Pay and place order</h1>
+<div class="split">
+  <div>
+    <h3>Items</h3>
+    <ul>
+      {% for r in rows %}
+        <li>{{ r.quantity }} × {{ r.item_name }} — ₹{{ r.line_total }}</li>
+      {% endfor %}
+    </ul>
+    <p class="price">Payable ₹{{ total }}</p>
+  </div>
+  <form class="form" method="post">
+    <label>Deliver to
+      <select name="address_id" required>
+        {% for a in addresses %}
+          <option value="{{ a.address_id }}">{{ a.line1 }}, {{ a.city }} {{ a.postal_code }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="pay">
+      <span>Payment</span>
+      <label><input type="radio" name="method" value="upi" checked> UPI (marked success)</label>
+      <label><input type="radio" name="method" value="card"> Card (marked success)</label>
+      <label><input type="radio" name="method" value="cod"> Cash on delivery (pending)</label>
+    </div>
+    <p class="hint">This is a classroom payment: UPI/card insert a successful row in <code>payments</code>. A trigger then marks the order paid and assigns a rider.</p>
+    <button class="btn" type="submit">Place order</button>
+  </form>
+</div>
+{% endblock %}

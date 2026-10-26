@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}FoodEase · eat nearby{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="tag green">Ahmedabad kitchens</p>
+    <h1>Dinner, without the queue.</h1>
+    <p class="lede">Browse neighbourhood restaurants, drop dishes in your bag, pay by UPI, card, or cash on delivery, and track the order as the kitchen moves it.</p>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('menu') }}">See the menu</a>
+      {% if not g.user %}
+        <a class="btn btn-ghost" href="{{ url_for('register') }}">Create an account</a>
+      {% endif %}
+    </div>
+  </div>
+  <aside class="hero-card">
+    <h3>Try it with demo logins</h3>
+    <ul>
+      <li>Customer · <strong>demo@foodease.com</strong> / demo123</li>
+      <li>Admin · <strong>admin@foodease.com</strong> / admin123</li>
+    </ul>
+    <p class="muted">Checkout uses a BEGIN / COMMIT transaction so a failed payment does not leave a half-written order.</p>
+  </aside>
+</section>
+
+<div class="section-head">
+  <h2>Open kitchens</h2>
+  <a href="{{ url_for('menu') }}">Full menu →</a>
+</div>
+<div class="grid">
+  {% for r in restaurants %}
+    <a class="card" href="{{ url_for('restaurant', restaurant_id=r.restaurant_id) }}">
+      <span class="tag">{{ r.cuisine }}</span>
+      <h3>{{ r.name }}</h3>
+      <p class="muted">{{ r.description }}</p>
+      <p>{{ r.dish_count }} dishes · from ₹{{ r.from_price or 0 }}</p>
+    </a>
+  {% endfor %}
+</div>
+
+<div class="section-head" style="margin-top:40px">
+  <h2>Starters and sweets</h2>
+  <p class="muted">Pulled with UNION ALL from two categories.</p>
+</div>
+<div class="grid">
+  {% for item in featured %}
+    <article class="card">
+      <span class="tag">{{ item.category_name }}</span>
+      <h3>{{ item.item_name }}</h3>
+      <p class="muted">{{ item.restaurant_name }}</p>
+      <p>{{ item.description }}</p>
+      <p class="price">₹{{ item.price }}</p>
+      {% if g.user %}
+        <form method="post" action="{{ url_for('cart_add') }}">
+          <input type="hidden" name="item_id" value="{{ item.item_id }}">
+          <input type="hidden" name="next" value="{{ url_for('home') }}">
+          <button class="btn btn-small" type="submit">Add to bag</button>
+        </form>
+      {% endif %}
+    </article>
+  {% endfor %}
+</div>
+{% endblock %}

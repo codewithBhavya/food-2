@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Kitchen desk · FoodEase{% endblock %}
+{% block content %}
+<h1>Kitchen desk</h1>
+<p class="muted">Three reporting queries from practical 12: aggregates, joins with GROUP BY / HAVING, and a nested subquery.</p>
+<div class="kpis">
+  <div class="kpi"><span class="muted">Orders</span><strong>{{ kpis.orders_total }}</strong></div>
+  <div class="kpi"><span class="muted">Customers</span><strong>{{ kpis.customers }}</strong></div>
+  <div class="kpi"><span class="muted">Revenue</span><strong>₹{{ kpis.revenue }}</strong></div>
+  <div class="kpi"><span class="muted">Live dishes</span><strong>{{ kpis.dishes }}</strong></div>
+</div>
+
+<div class="split">
+  <div>
+    <h2>Sales by kitchen</h2>
+    <table>
+      <thead><tr><th>Kitchen</th><th>Orders</th><th>Revenue</th></tr></thead>
+      <tbody>
+        {% for s in sales %}
+          <tr><td>{{ s.restaurant_name }}</td><td>{{ s.order_count }}</td><td>₹{{ s.revenue }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h2>Top dishes</h2>
+    <table>
+      <thead><tr><th>Dish</th><th>Sold</th><th>Sales</th></tr></thead>
+      <tbody>
+        {% for d in top_dishes %}
+          <tr><td>{{ d.item_name }} <span class="muted">{{ d.restaurant_name }}</span></td><td>{{ d.sold }}</td><td>₹{{ d.sales }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <h2>Above-average spenders</h2>
+    <ul>
+      {% for u in high_value %}
+        <li>{{ u.full_name }} · {{ u.email }}</li>
+      {% else %}
+        <li>Place a few paid orders to populate this subquery.</li>
+      {% endfor %}
+    </ul>
+    <p><a class="btn" href="{{ url_for('orders') }}">Manage orders</a></p>
+  </div>
+</div>
+{% endblock %}

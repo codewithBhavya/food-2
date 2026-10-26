@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Menu · FoodEase{% endblock %}
+{% block content %}
+<h1>Menu</h1>
+<p class="muted">Search uses LIKE. Cuisine and kitchen filters are extra WHERE clauses on the public menu view.</p>
+<form class="filters" method="get">
+  <input name="q" value="{{ q }}" placeholder="Search dishes or kitchens">
+  <select name="cuisine">
+    <option value="">All cuisines</option>
+    {% for c in cuisines %}
+      <option value="{{ c.cuisine }}" {% if cuisine == c.cuisine %}selected{% endif %}>{{ c.cuisine }}</option>
+    {% endfor %}
+  </select>
+  <select name="restaurant">
+    <option value="">All kitchens</option>
+    {% for r in restaurants %}
+      <option value="{{ r.restaurant_id }}" {% if restaurant_id == r.restaurant_id %}selected{% endif %}>{{ r.name }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn" type="submit">Filter</button>
+</form>
+
+<div class="grid">
+  {% for item in items %}
+    <article class="card">
+      <span class="tag">{{ item.price_tag }}</span>
+      <h3>{{ item.item_name }}</h3>
+      <p class="muted">{{ item.restaurant_name }} · {{ item.category_name }}</p>
+      <p>{{ item.description }}</p>
+      <p class="price">₹{{ item.price }}</p>
+      {% if g.user %}
+        <form method="post" action="{{ url_for('cart_add') }}">
+          <input type="hidden" name="item_id" value="{{ item.item_id }}">
+          <input type="hidden" name="next" value="{{ url_for('menu', q=q, cuisine=cuisine, restaurant=restaurant_id) }}">
+          <div class="inline">
+            <input class="qty" type="number" name="quantity" value="1" min="1">
+            <button class="btn btn-small" type="submit">Add</button>
+          </div>
+        </form>
+      {% else %}
+        <a class="btn btn-small btn-ghost" href="{{ url_for('login') }}">Sign in to order</a>
+      {% endif %}
+    </article>
+  {% else %}
+    <p>No dishes match that search.</p>
+  {% endfor %}
+</div>
+{% endblock %}

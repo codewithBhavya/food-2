@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Bag · FoodEase{% endblock %}
+{% block content %}
+<h1>Your bag</h1>
+{% if rows %}
+  <p class="muted">{{ rows[0].restaurant_name }} · one kitchen at a time</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Dish</th><th>Qty</th><th>Price</th><th>Line</th></tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+          <tr>
+            <td>{{ r.item_name }}</td>
+            <td>
+              <form class="inline" method="post" action="{{ url_for('cart_update') }}">
+                <input type="hidden" name="item_id" value="{{ r.item_id }}">
+                <input class="qty" type="number" name="quantity" value="{{ r.quantity }}" min="0">
+                <button class="btn btn-small btn-ghost" type="submit">Update</button>
+              </form>
+            </td>
+            <td>₹{{ r.price }}</td>
+            <td>₹{{ r.line_total }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="price" style="margin-top:16px">Total ₹{{ total }}</p>
+  <a class="btn" href="{{ url_for('checkout') }}">Checkout</a>
+{% else %}
+  <p>Your bag is empty. <a href="{{ url_for('menu') }}">Browse the menu</a>.</p>
+{% endif %}
+{% endblock %}

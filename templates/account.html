@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Account · FoodEase{% endblock %}
+{% block content %}
+<h1>{{ g.user.full_name }}</h1>
+<p class="muted">{{ g.user.email }} · {{ g.user.phone }} · {{ g.user.role }}</p>
+
+<h2>Saved addresses</h2>
+<ul>
+  {% for a in addresses %}
+    <li>{{ a.line1 }}, {{ a.city }}, {{ a.state }} {{ a.postal_code }}{% if a.is_default %} · default{% endif %}</li>
+  {% endfor %}
+</ul>
+
+<form class="form" method="post">
+  <h3>Add another address</h3>
+  <label>Street <input name="line1" required></label>
+  <label>City <input name="city" required></label>
+  <label>State <input name="state" required></label>
+  <label>Postal code <input name="postal_code" required></label>
+  <button class="btn" type="submit">Save address</button>
+</form>
+{% endblock %}

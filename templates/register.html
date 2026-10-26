@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Join FoodEase{% endblock %}
+{% block content %}
+<h1>Create your account</h1>
+<p class="lede">One insert into <code>users</code> and one into <code>addresses</code>, inside a single transaction.</p>
+<form class="form" method="post">
+  <label>Full name <input name="full_name" required></label>
+  <label>Email <input type="email" name="email" required></label>
+  <label>Phone <input name="phone" required></label>
+  <label>Password <input type="password" name="password" required minlength="6"></label>
+  <label>Street address <input name="line1" required></label>
+  <label>City <input name="city" value="Ahmedabad" required></label>
+  <label>State <input name="state" value="Gujarat" required></label>
+  <label>Postal code <input name="postal_code" required></label>
+  <button class="btn" type="submit">Register</button>
+  <p class="hint">Already eating here? <a href="{{ url_for('login') }}">Sign in</a>.</p>
+</form>
+{% endblock %}

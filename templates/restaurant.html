@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ restaurant.name }} · FoodEase{% endblock %}
+{% block content %}
+<p class="tag">{{ restaurant.cuisine }}</p>
+<h1>{{ restaurant.name }}</h1>
+<p class="lede">{{ restaurant.description }}</p>
+
+{% for cat, items in grouped.items() %}
+  <h2>{{ cat }}</h2>
+  <div class="grid">
+    {% for item in items %}
+      <article class="card">
+        <span class="tag">{{ item.price_tag }}</span>
+        <h3>{{ item.item_name }}</h3>
+        <p>{{ item.description }}</p>
+        <p class="price">₹{{ item.price }}</p>
+        {% if g.user %}
+          <form method="post" action="{{ url_for('cart_add') }}">
+            <input type="hidden" name="item_id" value="{{ item.item_id }}">
+            <input type="hidden" name="next" value="{{ url_for('restaurant', restaurant_id=restaurant.restaurant_id) }}">
+            <button class="btn btn-small" type="submit">Add to bag</button>
+          </form>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+{% endfor %}
+{% endblock %}
